@@ -2,12 +2,13 @@
   "name": "peerpulse",
   "version": "0.1.0",
   "private": true,
-{
   "packageManager": "npm@10.0.0",
   "scripts": {
-    "build": "next build"
-  }
-},
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint"
+  },
   "dependencies": {
     "@auth/prisma-adapter": "^2.11.3",
     "@prisma/client": "^5.22.0",
