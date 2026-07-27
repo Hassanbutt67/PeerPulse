@@ -9,7 +9,9 @@ const nextConfig = {
     ],
   },
   experimental: {
-    serverActions: true,  // ✅ Just true, not an object
+    serverActions: {
+      allowedOrigins: ['localhost:3000', '*.vercel.app'],
+    },
   },
 }
 
