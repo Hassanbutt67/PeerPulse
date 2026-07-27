@@ -1,12 +1,16 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: 'standalone',
   images: {
-    domains: ['localhost'],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: '**',
+      },
+    ],
   },
   experimental: {
-    serverActions: true,
+    serverActions: true,  // ✅ Just true, not an object
   },
 }
 
-export default nextConfig
+module.exports = nextConfig
