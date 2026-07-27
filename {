@@ -1,0 +1,1 @@
+    const emojiCount = sessionData.feedbacks.reduce((acc: any, f: any) =

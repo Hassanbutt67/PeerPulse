@@ -1,0 +1,105 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")  // ← Add this back
+}
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  name          String
+  password      String?
+  role          String    @default("STUDENT")
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  
+  sessions      Session[] 
+  feedbacks     Feedback[]
+  accounts      Account[]
+  auth_sessions AuthSession[]
+  contents      Content[]
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@unique([provider, providerAccountId])
+}
+
+model AuthSession {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Session {
+  id            String    @id @default(cuid())
+  code          String    @unique
+  title         String
+  description   String?
+  instructorId  String
+  instructor    User      @relation(fields: [instructorId], references: [id])
+  isActive      Boolean   @default(true)
+  createdAt     DateTime  @default(now())
+  endedAt       DateTime?
+  
+  feedbacks     Feedback[]
+  insights      Insight[]
+  contents      Content[]
+}
+
+model Content {
+  id            String      @id @default(cuid())
+  sessionId     String
+  session       Session     @relation(fields: [sessionId], references: [id])
+  instructorId  String
+  instructor    User        @relation(fields: [instructorId], references: [id])
+  title         String
+  type          String      // "MATERIAL" or "ANNOUNCEMENT"
+  description   String?
+  fileUrl       String?
+  fileName      String?
+  fileSize      Int?
+  fileType      String?
+  content       String?
+  isActive      Boolean     @default(true)
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+}
+
+model Feedback {
+  id            String      @id @default(cuid())
+  sessionId     String
+  session       Session     @relation(fields: [sessionId], references: [id])
+  userId        String?
+  user          User?       @relation(fields: [userId], references: [id])
+  emoji         String
+  comment       String?
+  timestamp     DateTime    @default(now())
+  isAnonymous   Boolean     @default(true)
+}
+
+model Insight {
+  id            String      @id @default(cuid())
+  sessionId     String
+  session       Session     @relation(fields: [sessionId], references: [id])
+  type          String
+  content       String
+  generatedAt   DateTime    @default(now())
+}
